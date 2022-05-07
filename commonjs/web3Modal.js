@@ -38,7 +38,7 @@ const _web3Modal = (() => {
         console.log('Selected account is', selectedAccount)
 
         if (selectedAccount) {
-            onAccountCb(selectedAccount)
+            onAccountCb(selectedAccount, chainData)
         }
     }
 
@@ -112,6 +112,44 @@ const _web3Modal = (() => {
         }
     }
 
+    const switchNetwork = async () => {
+        try {
+            await provider.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: '0x' + (4).toString(16) }],
+            });
+            console.log('11')
+        } catch (switchError) {
+            // This error code indicates that the chain has not been added to MetaMask.
+            if (switchError.code === 4902) {
+                try {
+                    await provider.request({
+                        method: "wallet_addEthereumChain",
+                        params: [
+                            {
+                                chainId: '0x' + (4).toString(16),
+                                chainName: "Rinkeby Test Network",
+                                rpcUrls: ["https://speedy-nodes-nyc.moralis.io/a7646c8b1c86ed27127cbb73/eth/rinkeby"],
+                                blockExplorerUrls: ["https://rinkeby.etherscan.io"],
+                            },
+                        ],
+                    });
+                } catch (addError) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: addError.message,
+                    })
+                    console.log('addError', addError)
+                }
+            }
+            Swal.fire({
+                icon: 'error',
+                text: switchError.message,
+            })
+            console.log('switchError', switchError)
+        }
+    }
+
     const getSelectedAccount = () => {
         return selectedAccount
     }
@@ -122,6 +160,7 @@ const _web3Modal = (() => {
         connect,
         disconnect,
         sendTransaction,
+        switchNetwork,
         getSelectedAccount,
     }
 })();

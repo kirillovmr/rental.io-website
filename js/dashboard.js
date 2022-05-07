@@ -32,6 +32,7 @@
         console.log('rentedByAddressMetadatas', rentedByAddressMetadatas)
 
         // Display my nfts
+        document.getElementById('myNFTs').innerHTML = ''
         for (let i = 0; i < moralisNfts.length; i++) {
             if (listingNftsData[i].tokenAddress !== '0x0000000000000000000000000000000000000000') 
                 continue
@@ -64,6 +65,7 @@
         }
 
         // Display my listings
+        document.getElementById('myListings').innerHTML = ''
         for (let i = 0; i < moralisNfts.length; i++) {
             if (listingNftsData[i].tokenAddress === '0x0000000000000000000000000000000000000000') 
                 continue
@@ -140,6 +142,7 @@
         }
 
         // Display my rentals
+        document.getElementById('myRentals').innerHTML = ''
         for (let i = rentedByAddress.length - 1; i >= 0; i--) {
             const imgUrl = rentedByAddressMetadatas[i].image ? 
                 (rentedByAddressMetadatas[i].image.includes('ipfs://') ? `https://gateway.moralisipfs.com/ipfs/${rentedByAddressMetadatas[i].image.replace('ipfs://', '')}` : rentedByAddressMetadatas[i].image)
@@ -222,8 +225,13 @@
         document.getElementById('loadingOverlay').style.display = 'none'
     }
 
-    const onAccount = async (selectedAccount) => {
+    const onAccount = async (selectedAccount, chainData) => {
         setLoading()
+
+        document.getElementById('wrongNetworkBlock').style.display = 'none'
+        if (chainData.chainId !== 4) {
+            document.getElementById('wrongNetworkBlock').style.display = 'block'
+        }
 
         document.getElementById('loadingWallet').style.display = 'none'
         document.getElementById('connectWallet').style.display = 'none'
@@ -261,6 +269,7 @@
         document.getElementById('connectWallet').addEventListener('click', _web3Modal.connect)
         document.getElementById('connectWallet2').addEventListener('click', _web3Modal.connect)
         document.getElementById('disconnectWallet').addEventListener('click', _web3Modal.disconnect)
+        document.getElementById('wrongNetworkBlock').addEventListener('click', _web3Modal.switchNetwork)
 
         if (_storage.get(_storage.keys.AUTHENTICATED)) {
             _web3Modal.connect()

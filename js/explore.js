@@ -86,7 +86,12 @@
         document.getElementById('loadingOverlay').style.display = 'none'
     }
     
-    const onAccount = async (selectedAccount) => {
+    const onAccount = async (selectedAccount, chainData) => {
+        document.getElementById('wrongNetworkBlock').style.display = 'none'
+        if (chainData.chainId !== 4) {
+            document.getElementById('wrongNetworkBlock').style.display = 'block'
+        }
+
         document.getElementById('loadingWallet').style.display = 'none'
         document.getElementById('connectWallet').style.display = 'none'
         document.getElementById('disconnectWallet').style.display = 'inline-block'
@@ -109,6 +114,7 @@
 
         document.getElementById('connectWallet').addEventListener('click', _web3Modal.connect)
         document.getElementById('disconnectWallet').addEventListener('click', _web3Modal.disconnect)
+        document.getElementById('wrongNetworkBlock').addEventListener('click', _web3Modal.switchNetwork)
 
         retrieveAndRenderData()
     
